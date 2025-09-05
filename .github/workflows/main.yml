@@ -55,27 +55,3 @@ jobs:
         name: EmployeeManagementApp.ipa
         path: ios_app/build/EmployeeManagementApp.ipa
         retention-days: 30
-        
-    - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: build-${{ github.run_number }}
-        release_name: Build ${{ github.run_number }}
-        body: |
-          ## Build Information
-          - **Commit**: ${{ github.sha }}
-          - **Branch**: ${{ github.ref_name }}
-          - **Triggered by**: ${{ github.actor }}
-          - **Date**: ${{ github.event.head_commit.timestamp }}
-          
-          ## Download
-          Tải file IPA từ phần Artifacts bên dưới.
-          
-          ## Installation
-          1. Tải file IPA
-          2. Cài đặt qua Xcode hoặc Cydia Impactor
-          3. Trust developer certificate trong Settings
-        draft: false
-        prerelease: true
