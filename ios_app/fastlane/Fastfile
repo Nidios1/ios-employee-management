@@ -1,0 +1,104 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Build and upload to App Center"
+  lane :appcenter do
+    # Build the app
+    build_app(
+      scheme: "EmployeeManagementApp",
+      configuration: "Release",
+      export_method: "development",
+      export_options: {
+        method: "development",
+        teamID: ENV["TEAM_ID"],
+        uploadBitcode: false,
+        uploadSymbols: true,
+        compileBitcode: false,
+        stripSwiftSymbols: true,
+        thinning: "<none>",
+        signingStyle: "automatic"
+      }
+    )
+    
+    # Upload to App Center
+    appcenter_upload(
+      api_token: ENV["APPCENTER_API_TOKEN"],
+      owner_name: ENV["APPCENTER_OWNER_NAME"],
+      app_name: ENV["APPCENTER_APP_NAME"],
+      file: lane_context[SharedValues::IPA_OUTPUT_PATH],
+      group: ENV["APPCENTER_DISTRIBUTION_GROUP"],
+      release_notes: "Build từ GitHub Actions - Commit: #{ENV['GITHUB_SHA']}"
+    )
+  end
+  
+  desc "Build for TestFlight"
+  lane :testflight do
+    # Increment build number
+    increment_build_number
+    
+    # Build the app
+    build_app(
+      scheme: "EmployeeManagementApp",
+      configuration: "Release",
+      export_method: "app-store"
+    )
+    
+    # Upload to TestFlight
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true
+    )
+  end
+  
+  desc "Build for App Store"
+  lane :appstore do
+    # Increment build number
+    increment_build_number
+    
+    # Build the app
+    build_app(
+      scheme: "EmployeeManagementApp",
+      configuration: "Release",
+      export_method: "app-store"
+    )
+    
+    # Upload to App Store
+    upload_to_app_store(
+      force: true,
+      skip_metadata: false,
+      skip_screenshots: true
+    )
+  end
+  
+  desc "Build for development"
+  lane :development do
+    build_app(
+      scheme: "EmployeeManagementApp",
+      configuration: "Debug",
+      export_method: "development"
+    )
+  end
+  
+  desc "Run tests"
+  lane :test do
+    run_tests(
+      scheme: "EmployeeManagementApp",
+      device: "iPhone 15"
+    )
+  end
+end
+
