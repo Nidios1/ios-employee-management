@@ -1,19 +1,35 @@
-# Build for iOS device
-xcodebuild -project MinimalApp.xcodeproj \
-  -scheme MinimalApp \
-  -configuration Release \
-  -destination generic/platform=iOS \
-  -archivePath build/MinimalApp.xcarchive \
-  archive \
-  CODE_SIGN_IDENTITY="" \
-  CODE_SIGNING_REQUIRED=NO \
-  CODE_SIGNING_ALLOWED=NO
+name: Simple iOS Build
 
-# Export IPA
-xcodebuild -exportArchive \
-  -archivePath build/MinimalApp.xcarchive \
-  -exportPath build/ \
-  -exportOptionsPlist ExportOptions.plist \
-  CODE_SIGN_IDENTITY="" \
-  CODE_SIGNING_REQUIRED=NO \
-  CODE_SIGNING_ALLOWED=NO
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+        
+    - name: Build IPA
+      run: |
+        cd ios_app
+        rm -rf build/
+        mkdir -p build/
+        xcodebuild -project MinimalApp.xcodeproj -scheme MinimalApp -configuration Release -destination generic/platform=iOS -archivePath build/MinimalApp.xcarchive archive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+        xcodebuild -exportArchive -archivePath build/MinimalApp.xcarchive -exportPath build/ -exportOptionsPlist ExportOptions.plist CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+        ls -la build/
+        
+    - name: Upload IPA
+      uses: actions/upload-artifact@v4
+      with:
+        name: MinimalApp.ipa
+        path: ios_app/build/MinimalApp.ipa
+        retention-days: 30
