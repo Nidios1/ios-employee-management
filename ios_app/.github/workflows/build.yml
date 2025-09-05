@@ -1,0 +1,57 @@
+name: Simple iOS Build
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+        
+    - name: Build IPA
+      run: |
+        cd ios_app
+        
+        # Clean build folder
+        rm -rf build/
+        mkdir -p build/
+        
+        # Build for iOS device
+        xcodebuild -project SimpleApp.xcodeproj \
+          -scheme SimpleApp \
+          -configuration Release \
+          -destination generic/platform=iOS \
+          -archivePath build/SimpleApp.xcarchive \
+          archive \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+        
+        # Export IPA
+        xcodebuild -exportArchive \
+          -archivePath build/SimpleApp.xcarchive \
+          -exportPath build/ \
+          -exportOptionsPlist ExportOptions.plist \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+        
+        # List build artifacts
+        ls -la build/
+        
+    - name: Upload IPA
+      uses: actions/upload-artifact@v4
+      with:
+        name: SimpleApp.ipa
+        path: ios_app/build/SimpleApp.ipa
+        retention-days: 30
