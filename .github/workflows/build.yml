@@ -1,4 +1,4 @@
-name: Test iOS Build
+name: Build iOS App
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  build:
     runs-on: macos-latest
     
     steps:
@@ -18,30 +18,64 @@ jobs:
       with:
         xcode-version: latest-stable
         
-    - name: Test Xcode
+    - name: Build IPA
       run: |
-        echo "🚀 Testing Xcode installation..."
-        xcodebuild -version
-        echo "✅ Xcode is working!"
+        cd ios_app
         
-    - name: Test iOS Simulator
-      run: |
-        echo "📱 Testing iOS Simulator..."
-        xcrun simctl list devices
-        echo "✅ iOS Simulator is available!"
+        # Clean build folder
+        rm -rf build/
+        mkdir -p build/
         
-    - name: Create Test Report
-      run: |
-        echo "# Test Report" > test-report.md
-        echo "## Xcode Version" >> test-report.md
-        xcodebuild -version >> test-report.md
-        echo "## iOS Simulators" >> test-report.md
-        xcrun simctl list devices >> test-report.md
-        echo "## Test Status: ✅ PASSED" >> test-report.md
+        # Build for iOS device
+        xcodebuild -project SimpleApp.xcodeproj \
+          -scheme SimpleApp \
+          -configuration Release \
+          -destination generic/platform=iOS \
+          -archivePath build/SimpleApp.xcarchive \
+          archive \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
         
-    - name: Upload Test Report
+        # Export IPA
+        xcodebuild -exportArchive \
+          -archivePath build/SimpleApp.xcarchive \
+          -exportPath build/ \
+          -exportOptionsPlist ExportOptions.plist \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+        
+        # List build artifacts
+        ls -la build/
+        
+    - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
-        name: test-report
-        path: test-report.md
-        retention-days: 7
+        name: SimpleApp.ipa
+        path: ios_app/build/SimpleApp.ipa
+        retention-days: 30
+        
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: build-${{ github.run_number }}
+        release_name: Build ${{ github.run_number }}
+        body: |
+          ## Build Information
+          - **Commit**: ${{ github.sha }}
+          - **Branch**: ${{ github.ref_name }}
+          - **Triggered by**: ${{ github.actor }}
+          - **Date**: ${{ github.event.head_commit.timestamp }}
+          
+          ## Download
+          Tải file IPA từ phần Artifacts bên dưới.
+          
+          ## Installation
+          1. Tải file IPA
+          2. Cài đặt qua Xcode hoặc Cydia Impactor
+          3. Trust developer certificate trong Settings
+        draft: false
+        prerelease: true
