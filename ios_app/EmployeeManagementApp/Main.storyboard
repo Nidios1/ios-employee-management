@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Login View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="LoginViewController" customModule="EmployeeManagementApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="abc-def-ghi">
+                                <rect key="frame" x="20" y="100" width="353" height="400"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Đăng nhập hệ thống" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jkl-mno-pqr">
+                                        <rect key="frame" x="0.0" y="0.0" width="353" height="21"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                        <color key="textColor" systemColor="labelColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Chọn hệ thống" textAlignment="left" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="stu-vwx-yza">
+                                        <rect key="frame" x="0.0" y="41" width="353" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Tên đăng nhập" textAlignment="left" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bcd-efg-hij">
+                                        <rect key="frame" x="0.0" y="95" width="353" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Mật khẩu" textAlignment="left" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="klm-nop-qrs">
+                                        <rect key="frame" x="0.0" y="149" width="353" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                                    </textField>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Mã OTP 6 số" textAlignment="left" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="tuv-wxy-zab">
+                                        <rect key="frame" x="0.0" y="203" width="353" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                                    </textField>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cde-fgh-ijk">
+                                        <rect key="frame" x="0.0" y="257" width="353" height="30"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="30s" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lmn-opq-rst">
+                                                <rect key="frame" x="0.0" y="0.0" width="30" height="21"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" systemColor="systemBlueColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <progressView opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" translatesAutoresizingMaskIntoConstraints="NO" id="uvw-xyz-abc">
+                                                <rect key="frame" x="40" y="4" width="313" height="4"/>
+                                                <color key="progressTintColor" systemColor="systemBlueColor"/>
+                                            </progressView>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstItem="uvw-xyz-abc" firstAttribute="leading" secondItem="lmn-opq-rst" secondAttribute="trailing" constant="10" id="def-ghi-jkl"/>
+                                            <constraint firstItem="lmn-opq-rst" firstAttribute="centerY" secondItem="cde-fgh-ijk" secondAttribute="centerY" id="mno-pqr-stu"/>
+                                            <constraint firstItem="lmn-opq-rst" firstAttribute="leading" secondItem="cde-fgh-ijk" secondAttribute="leading" id="vwx-yza-bcd"/>
+                                            <constraint firstItem="uvw-xyz-abc" firstAttribute="centerY" secondItem="cde-fgh-ijk" secondAttribute="centerY" id="efg-hij-klm"/>
+                                            <constraint firstItem="uvw-xyz-abc" firstAttribute="trailing" secondItem="cde-fgh-ijk" secondAttribute="trailing" id="nop-qrs-tuv"/>
+                                        </constraints>
+                                    </view>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wxy-zab-cde">
+                                        <rect key="frame" x="0.0" y="307" width="353" height="34"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="34" id="fgh-ijk-lmn"/>
+                                        </constraints>
+                                        <state key="normal" title="Đăng nhập"/>
+                                        <buttonConfiguration key="configuration" style="filled" title="Đăng nhập"/>
+                                        <connections>
+                                            <action selector="loginButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pqr-stu-vwx"/>
+                                        </connections>
+                                    </button>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yza-bcd-efg">
+                                        <rect key="frame" x="166.66666666666666" y="361" width="20" height="20"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                            </stackView>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hij-klm-nop">
+                                <rect key="frame" x="0.0" y="852" width="393" height="216"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </pickerView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="abc-def-ghi" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="qrs-tuv-wxy"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="abc-def-ghi" secondAttribute="trailing" constant="20" id="stu-vwx-yza"/>
+                            <constraint firstItem="abc-def-ghi" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="60" id="tuv-wxy-zab"/>
+                            <constraint firstItem="hij-klm-nop" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="uvw-xyz-abc"/>
+                            <constraint firstItem="hij-klm-nop" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="vwx-yza-bcd"/>
+                            <constraint firstItem="hij-klm-nop" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottom" id="wxy-zab-cde"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="activityIndicator" destination="yza-bcd-efg" id="xyz-abc-def"/>
+                        <outlet property="clockInButton" destination="wxy-zab-cde" id="ghi-jkl-mno"/>
+                        <outlet property="otpTextField" destination="tuv-wxy-zab" id="pqr-stu-vwx"/>
+                        <outlet property="passwordTextField" destination="klm-nop-qrs" id="rst-uvw-xyz"/>
+                        <outlet property="systemPickerView" destination="hij-klm-nop" id="abc-def-ghi"/>
+                        <outlet property="systemTextField" destination="stu-vwx-yza" id="jkl-mno-pqr"/>
+                        <outlet property="totpProgressView" destination="uvw-xyz-abc" id="stu-vwx-yza"/>
+                        <outlet property="totpTimeLabel" destination="lmn-opq-rst" id="tuv-wxy-zab"/>
+                        <outlet property="usernameTextField" destination="bcd-efg-hij" id="uvw-xyz-abc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="20" y="3"/>
+        </scene>
+        <!--Main Tab Bar Controller-->
+        <scene sceneID="tabBarController-scene">
+            <objects>
+                <tabBarController id="efg-hij-klm" customClass="MainTabBarController" customModule="EmployeeManagementApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="mno-pqr-stu">
+                        <rect key="frame" x="0.0" y="975" width="393" height="83"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <items>
+                            <tabBarItem title="Trang chủ" image="house" catalog="system" id="vwx-yza-bcd"/>
+                            <tabBarItem title="Chấm công" image="clock" catalog="system" id="cde-fgh-ijk"/>
+                            <tabBarItem title="Lương" image="dollarsign.circle" catalog="system" id="lmn-opq-rst"/>
+                            <tabBarItem title="Thông báo" image="bell" catalog="system" id="tuv-wxy-zab"/>
+                            <tabBarItem title="Chat" image="message" catalog="system" id="uvw-xyz-abc"/>
+                            <tabBarItem title="Hồ sơ" image="person" catalog="system" id="wxy-zab-cde"/>
+                        </items>
+                    </tabBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="fgh-ijk-lmn"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pqr-stu-vwx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="750" y="-320"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="bell" catalog="system" width="128" height="109"/>
+        <image name="clock" catalog="system" width="128" height="123"/>
+        <image name="dollarsign.circle" catalog="system" width="128" height="123"/>
+        <image name="house" catalog="system" width="128" height="98"/>
+        <image name="message" catalog="system" width="128" height="123"/>
+        <image name="person" catalog="system" width="128" height="123"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBlueColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>
