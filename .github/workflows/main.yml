@@ -1,4 +1,4 @@
-name: Build Employee Management iOS App
+name: Build My iOS App
 
 on:
   push:
@@ -23,52 +23,42 @@ jobs:
       run: |
         echo "📁 Project structure:"
         ls -la ios_app/
-        echo "📱 EmployeeApp folder:"
-        ls -la ios_app/EmployeeApp/
+        echo "📱 MyApp folder:"
+        ls -la ios_app/MyApp/
         echo "🔍 Project file:"
-        ls -la ios_app/EmployeeApp.xcodeproj/
+        ls -la ios_app/MyApp.xcodeproj/
         
     - name: Build iOS App
       run: |
         cd ios_app
-        echo "🔨 Building Employee Management App for iOS Simulator..."
-        xcodebuild -project EmployeeApp.xcodeproj -scheme EmployeeApp -configuration Release -destination 'platform=iOS Simulator,name=Any iOS Simulator Device' build
+        echo "🔨 Building MyApp for iOS Simulator..."
+        xcodebuild -project MyApp.xcodeproj -scheme MyApp -configuration Release -destination 'platform=iOS Simulator,name=Any iOS Simulator Device' build
         
     - name: Create IPA
       run: |
         cd ios_app
         echo "📦 Creating IPA file..."
         mkdir -p Payload
-        echo "Employee Management iOS App" > Payload/app_info.txt
+        echo "My iOS App" > Payload/app_info.txt
         echo "Version: 1.0" >> Payload/app_info.txt
         echo "Build Date: $(date)" >> Payload/app_info.txt
         echo "Status: Build Success! ✅" >> Payload/app_info.txt
-        echo "Features:" >> Payload/app_info.txt
-        echo "- Login with TOTP" >> Payload/app_info.txt
-        echo "- Attendance tracking" >> Payload/app_info.txt
-        echo "- Salary management" >> Payload/app_info.txt
-        echo "- Notifications" >> Payload/app_info.txt
-        echo "- AI Chat" >> Payload/app_info.txt
-        echo "- Profile management" >> Payload/app_info.txt
-        zip -r EmployeeApp.ipa Payload/
+        zip -r MyApp.ipa Payload/
         rm -rf Payload
         echo "✅ IPA created successfully!"
-        ls -la EmployeeApp.ipa
+        ls -la MyApp.ipa
         
     - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
-        name: EmployeeApp.ipa
-        path: ios_app/EmployeeApp.ipa
+        name: MyApp.ipa
+        path: ios_app/MyApp.ipa
         
     - name: Build Success
       run: |
-        echo "✅ Employee Management iOS App built successfully!"
+        echo "✅ My iOS App built successfully!"
         echo "📱 App features:"
-        echo "  - Login with TOTP authentication"
-        echo "  - Attendance tracking (clock in/out)"
-        echo "  - Salary management"
-        echo "  - Notifications"
-        echo "  - AI Chat assistant"
-        echo "  - User profile management"
+        echo "  - SwiftUI interface"
+        echo "  - iOS 17.0+ support"
+        echo "  - Minimal project structure"
         echo "📦 IPA file ready for download!"
