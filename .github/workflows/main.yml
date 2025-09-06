@@ -44,7 +44,7 @@ jobs:
       run: |
         cd ios_app
         echo "📱 Exporting IPA file..."
-        xcodebuild -exportArchive -archivePath TestApp.xcarchive -exportPath . -exportOptionsPlist ExportOptions.plist
+        xcodebuild -exportArchive -archivePath TestApp.xcarchive -exportPath . -exportOptionsPlist ExportOptions.plist CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
         
     - name: Upload IPA
       uses: actions/upload-artifact@v4
