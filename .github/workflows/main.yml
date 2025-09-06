@@ -40,7 +40,7 @@ jobs:
         echo "📱 Building for iOS Device..."
         xcodebuild -project TestApp.xcodeproj -scheme TestApp -configuration Release -destination 'generic/platform=iOS' build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
         
-    - name: Find App File
+    - name: Create IPA
       run: |
         cd ios_app
         echo "🔍 Finding .app file..."
@@ -49,6 +49,21 @@ jobs:
         ls -la build/ || echo "No build directory"
         echo "📁 All files:"
         find . -name "*TestApp*" -type d
+        echo "📦 Creating IPA file..."
+        # Tìm file .app và tạo IPA
+        APP_PATH=$(find . -name "*.app" -type d | head -1)
+        if [ -n "$APP_PATH" ]; then
+          echo "Found app at: $APP_PATH"
+          mkdir -p Payload
+          cp -r "$APP_PATH" Payload/
+          zip -r TestApp.ipa Payload/
+          rm -rf Payload
+          echo "✅ IPA created successfully!"
+          ls -la TestApp.ipa
+        else
+          echo "❌ No .app file found!"
+          exit 1
+        fi
         
     - name: Upload IPA
       uses: actions/upload-artifact@v4
