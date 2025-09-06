@@ -34,17 +34,20 @@ jobs:
         echo "🔨 Building TestApp for iOS Simulator..."
         xcodebuild -project TestApp.xcodeproj -scheme TestApp -configuration Release -destination 'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=18.6' build
         
-    - name: Archive Test App
+    - name: Build for Device
       run: |
         cd ios_app
-        echo "📦 Creating archive for IPA..."
-        xcodebuild -project TestApp.xcodeproj -scheme TestApp -configuration Release -destination 'generic/platform=iOS' -archivePath TestApp.xcarchive archive CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+        echo "📱 Building for iOS Device..."
+        xcodebuild -project TestApp.xcodeproj -scheme TestApp -configuration Release -destination 'generic/platform=iOS' build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
         
-    - name: Export IPA
+    - name: Create IPA
       run: |
         cd ios_app
-        echo "📱 Exporting IPA file..."
-        xcodebuild -exportArchive -archivePath TestApp.xcarchive -exportPath . -exportOptionsPlist ExportOptions.plist CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+        echo "📦 Creating IPA file..."
+        mkdir -p Payload
+        cp -r build/Release-iphoneos/TestApp.app Payload/
+        zip -r TestApp.ipa Payload/
+        rm -rf Payload
         
     - name: Upload IPA
       uses: actions/upload-artifact@v4
