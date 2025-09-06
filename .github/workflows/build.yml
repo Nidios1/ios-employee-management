@@ -30,8 +30,7 @@ jobs:
       run: |
         cd ios_app
         echo "🔨 Building SwiftUI app for iOS Simulator..."
-        xcodebuild -project SimpleApp.xcodeproj -scheme SimpleApp -configuration Release -destination 'platform=iOS Simulator,name=iPhone 15' build
-        
+        xcodebuild -project SimpleApp.xcodeproj -scheme SimpleApp -configuration Release -destination 'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=latest' build        
     - name: Build Success
       run: |
         echo "✅ Build thành công! SwiftUI app đã được build"
