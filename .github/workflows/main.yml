@@ -40,14 +40,15 @@ jobs:
         echo "📱 Building for iOS Device..."
         xcodebuild -project TestApp.xcodeproj -scheme TestApp -configuration Release -destination 'generic/platform=iOS' build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
         
-    - name: Create IPA
+    - name: Find App File
       run: |
         cd ios_app
-        echo "📦 Creating IPA file..."
-        mkdir -p Payload
-        cp -r build/Release-iphoneos/TestApp.app Payload/
-        zip -r TestApp.ipa Payload/
-        rm -rf Payload
+        echo "🔍 Finding .app file..."
+        find . -name "*.app" -type d
+        echo "📁 Build directory contents:"
+        ls -la build/ || echo "No build directory"
+        echo "📁 All files:"
+        find . -name "*TestApp*" -type d
         
     - name: Upload IPA
       uses: actions/upload-artifact@v4
