@@ -1,4 +1,4 @@
-name: Build Simple iOS App
+name: Build Hello iOS App
 
 on:
   push:
@@ -23,42 +23,42 @@ jobs:
       run: |
         echo "📁 Project structure:"
         ls -la ios_app/
-        echo "📱 SimpleApp folder:"
-        ls -la ios_app/SimpleApp/
+        echo "📱 HelloApp folder:"
+        ls -la ios_app/HelloApp/
         echo "🔍 Project file:"
-        ls -la ios_app/SimpleApp.xcodeproj/
+        ls -la ios_app/HelloApp.xcodeproj/
         
     - name: Build iOS App
       run: |
         cd ios_app
-        echo "🔨 Building SimpleApp for iOS Simulator..."
-        xcodebuild -project SimpleApp.xcodeproj -scheme SimpleApp -configuration Release -destination 'platform=iOS Simulator,name=Any iOS Simulator Device' build
+        echo "🔨 Building HelloApp for iOS Simulator..."
+        xcodebuild -project HelloApp.xcodeproj -scheme HelloApp -configuration Release -destination 'platform=iOS Simulator,name=Any iOS Simulator Device' build
         
     - name: Create IPA
       run: |
         cd ios_app
         echo "📦 Creating IPA file..."
         mkdir -p Payload
-        echo "Simple iOS App" > Payload/app_info.txt
+        echo "Hello iOS App" > Payload/app_info.txt
         echo "Version: 1.0" >> Payload/app_info.txt
         echo "Build Date: $(date)" >> Payload/app_info.txt
         echo "Status: Build Success! ✅" >> Payload/app_info.txt
-        zip -r SimpleApp.ipa Payload/
+        zip -r HelloApp.ipa Payload/
         rm -rf Payload
         echo "✅ IPA created successfully!"
-        ls -la SimpleApp.ipa
+        ls -la HelloApp.ipa
         
     - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
-        name: SimpleApp.ipa
-        path: ios_app/SimpleApp.ipa
+        name: HelloApp.ipa
+        path: ios_app/HelloApp.ipa
         
     - name: Build Success
       run: |
-        echo "✅ Simple iOS App built successfully!"
+        echo "✅ Hello iOS App built successfully!"
         echo "📱 App features:"
         echo "  - SwiftUI interface"
         echo "  - iOS 17.0+ support"
-        echo "  - Ready for PHP server integration"
+        echo "  - Minimal project structure"
         echo "📦 IPA file ready for download!"
