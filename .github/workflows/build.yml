@@ -1,4 +1,4 @@
-name: Build iOS App
+name: Build SwiftUI App
 
 on:
   push:
@@ -19,12 +19,21 @@ jobs:
       with:
         xcode-version: latest-stable
         
-    - name: Build iOS App
+    - name: List project files
+      run: |
+        echo "📁 Project structure:"
+        ls -la ios_app/
+        echo "📱 SimpleApp folder:"
+        ls -la ios_app/SimpleApp/
+        
+    - name: Build SwiftUI App
       run: |
         cd ios_app
-        xcodebuild -project MyApp.xcodeproj -scheme MyApp -configuration Release -destination 'platform=iOS Simulator,name=iPhone 15' build
+        echo "🔨 Building SwiftUI app for iOS Simulator..."
+        xcodebuild -project SimpleApp.xcodeproj -scheme SimpleApp -configuration Release -destination 'platform=iOS Simulator,name=iPhone 15' build
         
     - name: Build Success
       run: |
-        echo "✅ Build thành công! App đã được build cho iOS Simulator"
+        echo "✅ Build thành công! SwiftUI app đã được build"
         echo "📱 App có thể chạy trên iPhone Simulator"
+        echo "🎉 Project SwiftUI đơn giản hoạt động tốt!"
