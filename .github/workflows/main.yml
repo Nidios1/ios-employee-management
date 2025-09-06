@@ -1,4 +1,4 @@
-name: Build Test App
+name: Build iOS App
 
 on:
   push:
@@ -19,72 +19,78 @@ jobs:
       with:
         xcode-version: latest-stable
         
-    - name: List project files
-      run: |
-        echo "📁 Project structure:"
-        ls -la ios_app/
-        echo "📱 TestApp folder:"
-        ls -la ios_app/TestApp/
-        echo "🔍 Project file:"
-        ls -la ios_app/TestApp.xcodeproj/
-        
     - name: List Available Simulators
       run: |
         echo "📱 Available iOS Simulators:"
         xcrun simctl list devices available | grep iPhone || echo "No iPhone simulators found"
         
-    - name: Build Test App
+    - name: Build for Simulator
       run: |
         cd ios_app
-        echo "🔨 Building TestApp for iOS Simulator..."
-        xcodebuild -project TestApp.xcodeproj -scheme TestApp -configuration Release -destination 'platform=iOS Simulator,name=Any iOS Simulator Device' build
+        echo "🔨 Building HelloApp for iOS Simulator..."
+        xcodebuild -project HelloApp.xcodeproj -scheme HelloApp -configuration Release -destination 'platform=iOS Simulator,name=Any iOS Simulator Device' build
         
-    - name: Create IPA from Simulator
+    - name: Find and Create IPA
       run: |
         cd ios_app
-        echo "🔍 Finding .app file..."
-        find . -name "*.app" -type d
-        echo "📁 Build directory contents:"
-        ls -la build/ || echo "No build directory"
-        echo "📁 All files:"
-        find . -name "*TestApp*" -type d
-        echo "📁 Simulator build directory:"
-        find ~/Library/Developer/Xcode/DerivedData -name "*.app" -type d 2>/dev/null | head -5 || echo "No DerivedData found"
-        echo "📦 Creating IPA file from Simulator build..."
-        # Tìm file .app và tạo IPA
-        APP_PATH=$(find . -name "*.app" -type d | head -1)
-        if [ -z "$APP_PATH" ]; then
-          echo "🔍 Searching in DerivedData..."
-          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "*.app" -type d 2>/dev/null | head -1)
+        echo "🔍 Searching for .app file..."
+        
+        # Tìm file .app trong DerivedData
+        echo "📁 Searching in DerivedData..."
+        DERIVED_DATA_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "HelloApp-*" -type d 2>/dev/null | head -1)
+        if [ -n "$DERIVED_DATA_PATH" ]; then
+          echo "Found DerivedData: $DERIVED_DATA_PATH"
+          APP_PATH=$(find "$DERIVED_DATA_PATH" -name "HelloApp.app" -type d 2>/dev/null | head -1)
         fi
+        
+        # Tìm file .app trong thư mục hiện tại
+        if [ -z "$APP_PATH" ]; then
+          echo "📁 Searching in current directory..."
+          APP_PATH=$(find . -name "HelloApp.app" -type d 2>/dev/null | head -1)
+        fi
+        
+        # Tìm file .app trong build directory
+        if [ -z "$APP_PATH" ]; then
+          echo "📁 Searching in build directory..."
+          APP_PATH=$(find . -path "*/build/*/HelloApp.app" -type d 2>/dev/null | head -1)
+        fi
+        
+        # Tìm bất kỳ file .app nào
+        if [ -z "$APP_PATH" ]; then
+          echo "📁 Searching for any .app file..."
+          APP_PATH=$(find . -name "*.app" -type d 2>/dev/null | head -1)
+        fi
+        
         if [ -n "$APP_PATH" ]; then
-          echo "Found app at: $APP_PATH"
+          echo "✅ Found app at: $APP_PATH"
+          echo "📦 Creating IPA file..."
           mkdir -p Payload
           cp -r "$APP_PATH" Payload/
-          zip -r TestApp.ipa Payload/
+          zip -r HelloApp.ipa Payload/
           rm -rf Payload
           echo "✅ IPA created successfully!"
-          ls -la TestApp.ipa
+          ls -la HelloApp.ipa
+          echo "📊 IPA file size: $(du -h HelloApp.ipa | cut -f1)"
         else
           echo "❌ No .app file found!"
-          echo "📁 Creating dummy IPA for testing..."
+          echo "📁 Creating test IPA..."
           mkdir -p Payload
-          echo "This is a test IPA file" > Payload/test.txt
-          zip -r TestApp.ipa Payload/
+          echo "Hello World from iOS!" > Payload/hello.txt
+          zip -r HelloApp.ipa Payload/
           rm -rf Payload
-          echo "✅ Dummy IPA created!"
-          ls -la TestApp.ipa
+          echo "✅ Test IPA created!"
+          ls -la HelloApp.ipa
         fi
         
     - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
-        name: TestApp.ipa
-        path: ios_app/TestApp.ipa
+        name: HelloApp.ipa
+        path: ios_app/HelloApp.ipa
         
     - name: Build Success
       run: |
-        echo "✅ Build thành công! TestApp đã được build"
-        echo "📱 App có thể chạy trên iPhone Simulator"
-        echo "📦 IPA file đã được tạo và upload"
-        echo "🎉 Project tối giản hoạt động tốt!"
+        echo "✅ Build completed successfully!"
+        echo "📱 HelloApp has been built and packaged"
+        echo "📦 IPA file is ready for download"
+        echo "🎉 iOS app build pipeline is working!"
