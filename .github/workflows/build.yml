@@ -1,12 +1,13 @@
-name: Test iOS Build
+name: Build iOS App
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  test:
+  build:
     runs-on: macos-latest
     
     steps:
@@ -18,30 +19,18 @@ jobs:
       with:
         xcode-version: latest-stable
         
-    - name: Test Xcode
+    - name: Build iOS App
       run: |
-        echo "🚀 Testing Xcode installation..."
-        xcodebuild -version
-        echo "✅ Xcode is working!"
+        cd ios_app
+        xcodebuild -project MyApp.xcodeproj -scheme MyApp -configuration Release -destination 'generic/platform=iOS' -archivePath MyApp.xcarchive archive
         
-    - name: Test iOS Simulator
+    - name: Export IPA
       run: |
-        echo "📱 Testing iOS Simulator..."
-        xcrun simctl list devices
-        echo "✅ iOS Simulator is available!"
+        cd ios_app
+        xcodebuild -exportArchive -archivePath MyApp.xcarchive -exportPath . -exportOptionsPlist ExportOptions.plist
         
-    - name: Create Test Report
-      run: |
-        echo "# Test Report" > test-report.md
-        echo "## Xcode Version" >> test-report.md
-        xcodebuild -version >> test-report.md
-        echo "## iOS Simulators" >> test-report.md
-        xcrun simctl list devices >> test-report.md
-        echo "## Test Status: ✅ PASSED" >> test-report.md
-        
-    - name: Upload Test Report
+    - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
-        name: test-report
-        path: test-report.md
-        retention-days: 7
+        name: MyApp.ipa
+        path: ios_app/MyApp.ipa
