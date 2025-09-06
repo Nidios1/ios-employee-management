@@ -1,4 +1,4 @@
-name: Build SwiftUI App
+name: Build Test App
 
 on:
   push:
@@ -23,16 +23,38 @@ jobs:
       run: |
         echo "📁 Project structure:"
         ls -la ios_app/
-        echo "📱 SimpleApp folder:"
-        ls -la ios_app/SimpleApp/
+        echo "📱 TestApp folder:"
+        ls -la ios_app/TestApp/
+        echo "🔍 Project file:"
+        ls -la ios_app/TestApp.xcodeproj/
         
-    - name: Build SwiftUI App
+    - name: Build Test App
       run: |
         cd ios_app
-        echo "🔨 Building SwiftUI app for iOS Simulator..."
-        xcodebuild -project SimpleApp.xcodeproj -scheme SimpleApp -configuration Release -destination 'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=latest' build        
+        echo "🔨 Building TestApp for iOS Simulator..."
+        xcodebuild -project TestApp.xcodeproj -scheme TestApp -configuration Release -destination 'platform=iOS Simulator,name=iPhone 15' build
+        
+    - name: Archive Test App
+      run: |
+        cd ios_app
+        echo "📦 Creating archive for IPA..."
+        xcodebuild -project TestApp.xcodeproj -scheme TestApp -configuration Release -destination 'generic/platform=iOS' -archivePath TestApp.xcarchive archive
+        
+    - name: Export IPA
+      run: |
+        cd ios_app
+        echo "📱 Exporting IPA file..."
+        xcodebuild -exportArchive -archivePath TestApp.xcarchive -exportPath . -exportOptionsPlist ExportOptions.plist
+        
+    - name: Upload IPA
+      uses: actions/upload-artifact@v4
+      with:
+        name: TestApp.ipa
+        path: ios_app/TestApp.ipa
+        
     - name: Build Success
       run: |
-        echo "✅ Build thành công! SwiftUI app đã được build"
+        echo "✅ Build thành công! TestApp đã được build"
         echo "📱 App có thể chạy trên iPhone Simulator"
-        echo "🎉 Project SwiftUI đơn giản hoạt động tốt!"
+        echo "📦 IPA file đã được tạo và upload"
+        echo "🎉 Project tối giản hoạt động tốt!"
