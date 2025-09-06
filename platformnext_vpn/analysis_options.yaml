@@ -1,0 +1,66 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # Error rules
+    avoid_print: true
+    avoid_web_libraries_in_flutter: true
+    no_logic_in_create_state: true
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: true
+    prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true
+    prefer_final_fields: true
+    prefer_final_locals: true
+    prefer_single_quotes: true
+    require_trailing_commas: true
+    sort_constructors_first: true
+    sort_unnamed_constructors_first: true
+    use_build_context_synchronously: true
+    use_key_in_widget_constructors: true
+    use_named_constants: true
+    use_raw_strings: true
+    use_string_buffers: true
+    use_super_parameters: true
+    use_test_throws_matchers: true
+    use_to_and_as_if_applicable: true
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.mocks.dart"
+    - "**/generated/**"
+    - "**/build/**"
+    - "**/.dart_tool/**"
+    - "**/ios/**"
+    - "**/android/**"
+    - "**/web/**"
+    - "**/windows/**"
+    - "**/macos/**"
+    - "**/linux/**"
+
+  errors:
+    invalid_annotation_target: ignore
+    missing_required_param: error
+    missing_return: error
+    todo: ignore
+    deprecated_member_use: warning
+    deprecated_member_use_from_same_package: warning
+    invalid_use_of_visible_for_testing_member: warning
+    missing_whitespace_between_adjacent_strings: warning
+    prefer_typing_uninitialized_variables: warning
+    sort_child_properties_last: warning
+    unnecessary_statements: warning
+    use_build_context_synchronously: warning
+    use_colored_box: warning
+    use_decorated_box: warning
+    use_network_image_plus: warning
+    use_sized_box_shrink_expand: warning
+    use_super_parameters: warning
+    use_test_throws_matchers: warning
+    use_to_and_as_if_applicable: warning
+    use_visibility_decorator: warning
+    use_widgets_async: warning
+    valid_regexps: warning
+    void_checks: warning
