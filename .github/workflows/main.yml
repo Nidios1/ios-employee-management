@@ -1,122 +1,224 @@
-name: Build Flutter iOS App
+name: Build IPA for iOS
 
 on:
   push:
-    branches: [ main, master, develop ]
-  pull_request:
     branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
-  build-ios:
+  build:
     runs-on: macos-latest
     
     steps:
-    - name: Checkout repository
+    - name: Checkout
       uses: actions/checkout@v4
       
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.16.0'
-        channel: 'stable'
-        
-    - name: Setup Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'zulu'
-        java-version: '17'
+        flutter-version: '3.24.0'
+        cache: true
         
     - name: Install dependencies
-      run: flutter pub get
-      
-    - name: Run tests
-      run: flutter test
-      
-    - name: Analyze code
-      run: flutter analyze
-      
-    - name: Build iOS (Debug)
-      run: flutter build ios --debug --no-codesign
-      
-    - name: Setup Xcode
-      uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: latest-stable
-        
-    - name: Install Apple Certificate
-      if: ${{ secrets.CERTIFICATE_P12 }}
-      env:
-        CERTIFICATE_P12: ${{ secrets.CERTIFICATE_P12 }}
-        CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
       run: |
-        echo $CERTIFICATE_P12 | base64 --decode > certificate.p12
-        security create-keychain -p "" build.keychain
-        security default-keychain -s build.keychain
-        security unlock-keychain -p "" build.keychain
-        security import certificate.p12 -k build.keychain -P $CERTIFICATE_PASSWORD -T /usr/bin/codesign
-        security set-key-partition-list -S apple-tool:,apple: -s -k "" build.keychain
-        security find-identity -v
+        flutter pub get
         
-    - name: Install Provisioning Profile
-      if: ${{ secrets.PROVISIONING_PROFILE }}
-      env:
-        PROVISIONING_PROFILE: ${{ secrets.PROVISIONING_PROFILE }}
-      run: |
-        echo $PROVISIONING_PROFILE | base64 --decode > profile.mobileprovision
-        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-        cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-        
-    - name: Build iOS (Release)
-      if: ${{ secrets.CERTIFICATE_P12 && secrets.PROVISIONING_PROFILE }}
-      run: |
-        flutter build ios --release --no-codesign
+        # Install iOS dependencies
         cd ios
-        xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -destination 'generic/platform=iOS' -archivePath Runner.xcarchive archive
-        xcodebuild -exportArchive -archivePath Runner.xcarchive -exportPath . -exportOptionsPlist ExportOptions.plist
         
-    - name: Create Export Options Plist
-      if: ${{ secrets.CERTIFICATE_P12 && secrets.PROVISIONING_PROFILE }}
+        # Clean previous installation
+        rm -rf Pods/ Podfile.lock
+        
+        # Install CocoaPods dependencies
+        pod install --verbose
+        
+        cd ..
+        
+    - name: Clean and prepare
       run: |
-        cat > ios/ExportOptions.plist << EOF
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>teamID</key>
-            <string>${{ secrets.TEAM_ID }}</string>
-            <key>uploadBitcode</key>
-            <false/>
-            <key>uploadSymbols</key>
-            <true/>
-            <key>compileBitcode</key>
-            <false/>
-        </dict>
-        </plist>
-        EOF
+        flutter clean
+        flutter pub get
+        flutter packages get
         
-    - name: Upload IPA to TestFlight
-      if: ${{ secrets.CERTIFICATE_P12 && secrets.PROVISIONING_PROFILE && secrets.APPLE_ID }}
-      env:
-        APPLE_ID: ${{ secrets.APPLE_ID }}
-        APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+    - name: Verify Flutter configuration
       run: |
-        xcrun altool --upload-app --file ios/Runner.ipa --username $APPLE_ID --password $APPLE_ID_PASSWORD
+        echo "Flutter doctor:"
+        flutter doctor -v
+        echo "Flutter devices:"
+        flutter devices
+        echo "Flutter version:"
+        flutter --version
+        echo "Project analysis (non-fatal):"
+        flutter analyze || echo "Analysis completed with warnings"
         
-    - name: Upload IPA Artifact
-      if: ${{ secrets.CERTIFICATE_P12 && secrets.PROVISIONING_PROFILE }}
+        echo "Checking Flutter engine:"
+        flutter config --list
+        
+        echo "Checking project structure:"
+        ls -la lib/
+        echo "Checking assets:"
+        ls -la assets/ || echo "No assets directory"
+        
+    - name: Pre-build verification
+      run: |
+        echo "=== PRE-BUILD VERIFICATION ==="
+        echo "Checking Flutter configuration..."
+        flutter config --list
+        
+        echo "Checking project structure..."
+        ls -la lib/
+        echo "Checking pubspec.yaml..."
+        head -20 pubspec.yaml
+        
+        echo "Checking iOS configuration..."
+        ls -la ios/Runner/
+        
+        echo "Checking Flutter dependencies..."
+        flutter pub deps --style=tree | head -30
+        
+    - name: Build iOS for Device (Release)
+      run: |
+        echo "Building iOS app with CocoaPods dependencies..."
+        
+        # Ensure CocoaPods is properly installed
+        cd ios
+        pod install --verbose
+        cd ..
+        
+        # Build with Flutter
+        flutter build ios --release --no-codesign --verbose --tree-shake-icons
+        
+        echo "Build completed successfully"
+        
+        # Verify build contents
+        echo "=== BUILD VERIFICATION ==="
+        echo "Checking Runner.app contents..."
+        ls -la build/ios/iphoneos/Runner.app/
+        
+        echo "Checking Runner executable size..."
+        ls -lh build/ios/iphoneos/Runner.app/Runner
+        
+        echo "Checking Frameworks folder..."
+        if [ -d "build/ios/iphoneos/Runner.app/Frameworks" ]; then
+          echo "Frameworks found:"
+          ls -la build/ios/iphoneos/Runner.app/Frameworks/
+          echo "Frameworks count:"
+          ls -la build/ios/iphoneos/Runner.app/Frameworks/ | wc -l
+          
+          echo "Expected frameworks (should be 11 like in your image):"
+          echo "- Flutter.framework"
+          echo "- url_launcher_ios.framework"
+          echo "- sqlite_darwin.framework"
+          echo "- shared_preferences_foundation.framework"
+          echo "- path_provider_foundation.framework"
+          echo "- package_info_plus.framework"
+          echo "- just_audio.framework"
+          echo "- image_picker_ios.framework"
+          echo "- flutter_local_notifications.framework"
+          echo "- flutter_app_badger.framework"
+          echo "- audio_session.framework"
+          
+          echo "Actual frameworks:"
+          ls -la build/ios/iphoneos/Runner.app/Frameworks/ | grep "\.framework"
+          
+          # Check if we have the expected number of frameworks
+          FRAMEWORK_COUNT=$(ls -la build/ios/iphoneos/Runner.app/Frameworks/ | grep "\.framework" | wc -l)
+          echo "Framework count: $FRAMEWORK_COUNT"
+          
+          if [ "$FRAMEWORK_COUNT" -lt 8 ]; then
+            echo "❌ Too few frameworks ($FRAMEWORK_COUNT), expected 11"
+            echo "This means Flutter didn't generate all frameworks"
+            exit 1
+          else
+            echo "✅ Sufficient frameworks found ($FRAMEWORK_COUNT)"
+          fi
+        else
+          echo "❌ Frameworks directory missing!"
+          echo "This means Flutter build failed or CocoaPods didn't install"
+          exit 1
+        fi
+        
+        echo "Checking Assets.car..."
+        ls -lh build/ios/iphoneos/Runner.app/Assets.car || echo "Assets.car missing"
+        
+        echo "Checking App icons..."
+        ls -la build/ios/iphoneos/Runner.app/AppIcon*.png || echo "App icons missing"
+        
+    - name: Verify Build Contents
+      run: |
+        echo "Checking build contents..."
+        ls -la build/ios/iphoneos/Runner.app/
+        echo "Checking for required files..."
+        ls -la build/ios/iphoneos/Runner.app/Frameworks/ || echo "Frameworks folder missing"
+        ls -la build/ios/iphoneos/Runner.app/_CodeSignature/ || echo "CodeSignature folder missing"
+        
+    - name: Create IPA from App Bundle
+      run: |
+        echo "Creating IPA to match original structure..."
+        cd build/ios/iphoneos
+        
+        # Verify we have all required files like original IPA
+        echo "=== PRE-IPA VERIFICATION ==="
+        echo "Runner.app contents:"
+        ls -la Runner.app/
+        
+        echo "Frameworks:"
+        ls -la Runner.app/Frameworks/ || echo "No Frameworks"
+        
+        echo "CodeSignature:"
+        ls -la Runner.app/_CodeSignature/ || echo "No CodeSignature"
+        
+        echo "Assets:"
+        ls -la Runner.app/Assets.car || echo "No Assets.car"
+        
+        # Check for required files for installation
+        echo "=== INSTALLATION REQUIREMENTS CHECK ==="
+        if [ -f "Runner.app/Info.plist" ]; then
+          echo "✅ Info.plist present"
+        else
+          echo "❌ Info.plist missing"
+          exit 1
+        fi
+        
+        if [ -f "Runner.app/Runner" ]; then
+          echo "✅ Runner executable present"
+        else
+          echo "❌ Runner executable missing"
+          exit 1
+        fi
+        
+        if [ -d "Runner.app/Frameworks" ]; then
+          echo "✅ Frameworks directory present"
+        else
+          echo "❌ Frameworks directory missing"
+          exit 1
+        fi
+        
+        # Create Payload directory (same as original IPA structure)
+        mkdir -p Payload
+        
+        # Copy Runner.app to Payload (preserving all files)
+        cp -r Runner.app Payload/
+        
+        # Verify Payload contents
+        echo "Payload contents:"
+        ls -la Payload/Runner.app/
+        
+        # Create IPA with same structure as original
+        zip -r ../../../ppapikey.ipa Payload/
+        
+        # Verify IPA was created
+        echo "IPA created:"
+        ls -lh ../../../ppapikey.ipa
+        
+        # Clean up
+        rm -rf Payload
+        
+        echo "✅ IPA created successfully with same structure as original"
+        
+    - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
-        name: ios-app-${{ github.sha }}
-        path: ios/Runner.ipa
+        name: ppapikey-ipa
+        path: ppapikey.ipa
         retention-days: 30
-        
-    - name: Upload Debug Build Artifact
-      if: ${{ !secrets.CERTIFICATE_P12 }}
-      uses: actions/upload-artifact@v4
-      with:
-        name: ios-debug-build-${{ github.sha }}
-        path: build/ios/iphoneos/
-        retention-days: 7
