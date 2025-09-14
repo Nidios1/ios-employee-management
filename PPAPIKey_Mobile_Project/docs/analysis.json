@@ -1,0 +1,148 @@
+{
+  "app_analysis": {
+    "app_name": "Runner",
+    "app_info": {
+      "CFBundleName": "ppapikey_server",
+      "CFBundleDisplayName": "PPAPIKey Mobile",
+      "CFBundleIdentifier": "com.ppapikey.dev",
+      "CFBundleVersion": "1",
+      "CFBundleShortVersionString": "1.2.2",
+      "CFBundleExecutable": "Runner",
+      "MinimumOSVersion": "13.0",
+      "UIDeviceFamily": [1, 2],
+      "UISupportedInterfaceOrientations": [
+        "UIInterfaceOrientationPortrait",
+        "UIInterfaceOrientationLandscapeLeft", 
+        "UIInterfaceOrientationLandscapeRight"
+      ],
+      "LSRequiresIPhoneOS": true
+    },
+    "framework": "Flutter",
+    "dart_version": "3.0+",
+    "flutter_version": "3.16.0+",
+    "platform": "iOS",
+    "architecture": "arm64",
+    "permissions": [
+      "NSCameraUsageDescription",
+      "NSContactsUsageDescription", 
+      "NSLocationWhenInUseUsageDescription",
+      "NSMicrophoneUsageDescription",
+      "NSPhotoLibraryUsageDescription"
+    ],
+    "features": [
+      "API Key Management",
+      "User Authentication",
+      "Dashboard with Statistics",
+      "Package Management",
+      "Notification System",
+      "VIP Member System",
+      "Multilingual Support (VI/EN)",
+      "Dark/Light Theme",
+      "Audio Support",
+      "Image Picker",
+      "Local Storage",
+      "Push Notifications"
+    ],
+    "dependencies": [
+      "flutter_local_notifications",
+      "just_audio",
+      "image_picker_ios",
+      "sqflite_darwin",
+      "shared_preferences_foundation",
+      "url_launcher_ios",
+      "package_info_plus",
+      "path_provider_foundation",
+      "audio_session",
+      "flutter_app_badger",
+      "permission_handler_apple"
+    ],
+    "assets": {
+      "images": [
+        "admin.png",
+        "logo.png", 
+        "normal.png",
+        "vipmember.png"
+      ],
+      "fonts": [
+        "Roboto-Bold.ttf",
+        "Roboto-Italic.ttf",
+        "Roboto-Light.ttf",
+        "Roboto-Medium.ttf",
+        "Roboto-Regular.ttf"
+      ],
+      "audio": [
+        "logout.mp3",
+        "opening.mp3"
+      ],
+      "translations": [
+        "en.json",
+        "vi.json"
+      ]
+    },
+    "api_endpoints": {
+      "main_server": "API Server",
+      "ctv_server": "CTV Server"
+    },
+    "extract_path": "ipa_extracted"
+  },
+  "project_structure": {
+    "lib/": "Flutter source code",
+    "lib/screens/": "UI screens and pages",
+    "lib/widgets/": "Reusable UI components", 
+    "lib/services/": "Business logic and API services",
+    "lib/utils/": "Utility functions and helpers",
+    "assets/": "Images, fonts, audio, translations",
+    "ios/": "iOS native configuration",
+    "android/": "Android native configuration",
+    ".github/workflows/": "GitHub Actions CI/CD"
+  },
+  "build_requirements": {
+    "flutter_sdk": "3.16.0+",
+    "dart_sdk": "3.0+",
+    "xcode": "14.0+",
+    "ios_deployment_target": "13.0",
+    "macos": "Required for iOS builds",
+    "apple_developer_account": "Required for signing"
+  },
+  "next_steps": [
+    "1. Initialize Flutter project with proper structure",
+    "2. Copy extracted assets to project directories",
+    "3. Setup iOS project configuration",
+    "4. Configure signing and provisioning profiles",
+    "5. Install Flutter dependencies",
+    "6. Test build process locally",
+    "7. Setup GitHub Actions with Apple Developer credentials",
+    "8. Configure automatic IPA generation",
+    "9. Setup TestFlight deployment (optional)",
+    "10. Test on physical iOS devices"
+  ],
+  "github_setup": {
+    "secrets_required": [
+      "APPLE_ID",
+      "APPLE_ID_PASSWORD", 
+      "CERTIFICATE_P12",
+      "CERTIFICATE_PASSWORD",
+      "PROVISIONING_PROFILE",
+      "TEAM_ID"
+    ],
+    "workflow_features": [
+      "Automatic build on push/PR",
+      "Flutter dependency installation",
+      "Code analysis and testing",
+      "iOS build with signing",
+      "IPA artifact upload",
+      "TestFlight deployment"
+    ]
+  },
+  "estimated_complexity": "Medium",
+  "estimated_time": "2-4 hours for complete setup",
+  "notes": [
+    "This is a Flutter app, not native iOS",
+    "Requires Flutter SDK and Dart knowledge",
+    "iOS build requires macOS environment",
+    "Apple Developer Account needed for signing",
+    "App uses multiple Flutter plugins",
+    "Supports both iPhone and iPad",
+    "Has comprehensive localization support"
+  ]
+}

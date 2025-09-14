@@ -1,0 +1,33 @@
+platform :ios, '12.0'
+
+target 'Runner' do
+  use_frameworks!
+  use_modular_headers!
+
+  # Flutter dependencies
+  pod 'Flutter', :path => '../Flutter'
+  
+  # Plugin dependencies
+  pod 'FMDB', '~> 2.7'
+  pod 'SQLite3', '~> 3.0'
+  pod 'AudioToolbox', '~> 1.0'
+  pod 'AVFoundation', '~> 1.0'
+  pod 'MediaPlayer', '~> 1.0'
+  pod 'Photos', '~> 1.0'
+  pod 'PhotosUI', '~> 1.0'
+  pod 'UserNotifications', '~> 1.0'
+  pod 'UIKit', '~> 1.0'
+  pod 'Foundation', '~> 1.0'
+end
+
+# Post install script to ensure Flutter frameworks are included
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+    
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
+    end
+  end
+end

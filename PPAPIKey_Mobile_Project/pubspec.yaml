@@ -1,0 +1,86 @@
+name: ppapikey_mobile
+description: Flutter iOS app for API key management
+
+version: 1.2.2+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # UI
+  cupertino_icons: ^1.0.2
+  
+  # HTTP requests
+  http: ^1.1.0
+  
+  # State management
+  provider: ^6.1.1
+  
+  # Local storage
+  shared_preferences: ^2.2.2
+  
+  # Database
+  sqflite: ^2.3.0
+  
+  # Notifications
+  flutter_local_notifications: ^16.3.0
+  
+  # Audio
+  just_audio: ^0.9.36
+  audio_session: ^0.1.16
+  
+  # Image picker
+  image_picker: ^1.0.4
+  
+  # URL launcher
+  url_launcher: ^6.2.2
+  
+  # Package info
+  package_info_plus: ^4.2.0
+  
+  # Path provider
+  path_provider: ^2.1.1
+  
+  # App badge
+  flutter_app_badger: ^1.5.0
+  
+  # Permissions
+  permission_handler: ^11.1.0
+  
+  # Internationalization
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/audio/
+    - assets/translations/
+    - assets/fonts/
+
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Roboto-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Roboto-Italic.ttf
+          style: italic
+    - family: MaterialIcons
+      fonts:
+        - asset: assets/fonts/MaterialIcons-Regular.otf

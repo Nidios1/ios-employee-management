@@ -1,0 +1,12 @@
+FLUTTER_ROOT=/Users/runner/hostedtoolcache/flutter/3.16.0-stable/macos/flutter
+FLUTTER_APPLICATION_PATH=/Users/runner/work/apps/apps/PPAPIKey_Mobile_Project
+COCOAPODS_PARALLEL_CODE_SIGN=true
+FLUTTER_TARGET=lib/main.dart
+FLUTTER_BUILD_DIR=build
+FLUTTER_BUILD_NAME=1.0.0
+FLUTTER_BUILD_NUMBER=1
+EXCLUDED_ARCHS[sdk=iphonesimulator*]=i386
+DART_OBFUSCATION=false
+TRACK_WIDGET_CREATION=true
+TREE_SHAKE_ICONS=false
+PACKAGE_CONFIG=/Users/runner/work/apps/apps/PPAPIKey_Mobile_Project/.dart_tool/package_config.json
